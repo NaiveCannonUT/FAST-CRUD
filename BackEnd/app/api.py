@@ -17,6 +17,55 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+#Get root
+
+@app.get("/", tags=["root"])
+async def read_root() -> dict:
+    return {"message": "Hellow"}
+
+personajes = [
+    {
+        "id": "1",
+        "Nombre" : "Hu tao",
+    },
+    {
+        "id": "2",
+        "Nombre" : "Furina",
+    },
+    {
+        "id": "3",
+        "Nombre" : "Collei",
+    },
+    {
+        "id": "4",
+        "Nombre" : "Fischl",
+    },
+    {
+        "id": "5",
+        "Nombre" : "Kamisato Ayaka",
+    },
+    {
+        "id": "6",
+        "Nombre" : "Kuki Shinobu",
+    },
+    {
+        "id": "7",
+        "Nombre" : "Tartaglia",
+    },
+    {
+        "id": "8",
+        "Nombre" : "Kaeya",
+    },
+    {
+        "id": "9",
+        "Nombre" : "Noelle",
+    },
+    {
+        "id": "10",
+        "Nombre" : "Zhongli",
+    },
+    
+]
 #GET router
 
 @app.get("/personajes", tags=["personajes"])
@@ -26,38 +75,36 @@ async def get_personajes() -> dict:
 #POST
 
 @app.post("/personajes", tags=["personajes"])
-async def add_personajes(personajes:dict) -> dict:
-    personajes.append(personajes)
+async def add_personajes(personaje:dict) -> dict:
+    personajes.append(personaje)
     return{
         "data":{"Personaje a sido agreado"}
     }
 
-personajes = [
-    {
-        "id_personaje": "1",
-        "Nombre" : "Hu tao",
-        "Descripcion" : "La 77th directora de la funeraria del camino",
-        "Rareza" : "5 Estrellas",
-        "Elemento" : "Pyro",
-        "Region" : "Liyue",
-        "Arma" : "Lanza"
-    },
-    {
-        "id_personaje": "2",
-        "Nombre" : "Furina",
-        "Descripcion" : "Una autentica celebridad de fontaine",
-        "Rareza" : "5 estrellas",
-        "Elemento" : "Hydro",
-        "Region" : "Fontaine",
-        "Arma" : "Espada ligera"
-    },
-    {
-        "id_personaje": "3",
-        "Nombre" : "Collei",
-        "Descripcion" : "Una guardabosques en practicas",
-        "Rareza" : "4 estrellas",
-        "Elemento" : "Dendro",
-        "Region" : "Sumeru",
-        "Arma" : "Arco"
+#Put
+
+@app.put("/personajes/{id}", tags=["personajes"])
+async def update_personajes(id: int, body: dict) -> dict:
+    for personaje in personajes:
+        if int(personaje["id"]) == id:
+            personaje["Nombre"] = body["Nombre"]
+            return {
+                "data": f"Personaje with id {id} has been updated."
+            }
+
+    return {
+        "data": f"Personaje with id {id} not found."
     }
-]
+    
+@app.delete("/personajes{id}", tags=["todos"])
+async def delete_personaje(id: int) -> dict:
+    for personaje in personajes:
+        if int(personaje["id"]) == id:
+            personajes.remove(personaje)
+            return {
+                "data" : f"Personaje with {id} has been removed"
+            }
+            
+    return {
+        "data" : f"Personaje with id {id} not found"
+    }
